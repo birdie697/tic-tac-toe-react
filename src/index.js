@@ -15,17 +15,22 @@ function Square(props) {
 
 
 class Board extends React.Component {
-  renderSquare(i) {
-    const winner = calculateWinner(this.props.squares);
-    let squareStatus = "square";
+
+  isWinningSquare(i, squares) {
+    const winner = calculateWinner(squares);
 
     if (winner) {
       const winningSquares = winner.winningSquares;
       if (winningSquares.includes(i)) {
-        squareStatus = "winningSquare"
+        return true;
+      } else {
+        return false;
       }
     }
+  }
 
+  renderSquare(i) {
+    const squareStatus = this.isWinningSquare(i, this.props.squares) ? "winningSquare" : "square"
     return (
       <Square
         value={this.props.squares[i]}
@@ -157,10 +162,10 @@ function columnRow(i) {
     2: "(3,3)",
     3: "(1,2)",
     4: "(2,2)",
-    5: "(2,3)",
+    5: "(3,2)",
     6: "(1,1)",
-    7: "(1,2)",
-    8: "(1,3)",
+    7: "(2,1)",
+    8: "(3,1)",
   }
   return gridMap[i];
 }
