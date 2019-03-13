@@ -35,9 +35,9 @@ class Board extends React.Component {
     for (let i = 0; i < 3; i++) {
       let squares = [];
       for (let j = 0; j < 3; j++) {
-        squares.push(<span>{this.renderSquare(i*3+j)}</span>)
+        squares.push(<span key={i*3+j}>{this.renderSquare(i*3+j)}</span>)
       }
-      grid.push(<div className="board-row">{squares}</div>)
+      grid.push(<div className="board-row" key={i}>{squares}</div>)
     }
     return grid
   }
@@ -72,6 +72,7 @@ class Game extends React.Component {
         }],
         stepNumber: 0,
         xIsNext: true,
+        ascendingOrder: true,
       };
     }
 
@@ -101,6 +102,10 @@ class Game extends React.Component {
       });
     }
 
+    toggleHistory(moves) {
+      this.setState({ ascendingOrder: !this.state.ascendingOrder})
+    }
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -122,12 +127,27 @@ class Game extends React.Component {
       );
     });
 
+    const toggleMoveHistory =
+      <button
+        onClick={() => this.toggleHistory(moves)}
+      >
+        Toggle Move history
+      </button>
+
     let status;
     if (winner) {
       status = 'Winner: ' + winner.winner;
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
+
+    let orderedMoves;
+    if (this.state.ascendingOrder) {
+      orderedMoves = moves;
+    } else {
+      orderedMoves = moves.reverse();
+    }
+
 
     return (
       <div className="game">
@@ -139,7 +159,8 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <div>{toggleMoveHistory}</div>
+          <ol>{orderedMoves}</ol>
         </div>
       </div>
     );
